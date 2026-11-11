@@ -54,3 +54,4 @@ Deploying your `dapp/` folder to a live public HTTPS URL allows hospital adminis
    ```text
    https://medchain-health.vercel.app
    ```
+Deployment setup updated
