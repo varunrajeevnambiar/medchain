@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedChain | Sovereign Patient-Controlled Health Data Architecture</title>
+  
+  <!-- Typography: Fraunces (editorial serif) + Plus Jakarta Sans (structured UI sans) + IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --canvas: #fbfbf9;
+      --surface: #ffffff;
+      --surface-subtle: #f5f4f0;
+      --surface-inset: #edece8;
+      
+      --border-subtle: #e6e4dc;
+      --border-medium: #d4d0c5;
+      --border-strong: #9c9587;
+
+      --text-primary: #191c1d;
+      --text-secondary: #474b4e;
+      --text-muted: #72767a;
+      
+      --primary: #1b4938;          /* Forest spruce */
+      --primary-hover: #13372a;
+      --primary-subtle: #e8f0ec;
+      --primary-text: #113427;
+
+      --doctor-primary: #1a446c;   /* Clinical navy */
+      --doctor-hover: #12314f;
+      --doctor-subtle: #eaf1f7;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Navigation */
+    .landing-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border-medium);
+      padding-left: 12px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 140ms ease-out;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 15px;
+    }
+
+    /* Clean Professional Header */
+    .landing-nav {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(230, 228, 220, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    /* Hero Wrapper with Full-Bleed Atmospheric Background */
+    .hero-wrapper {
+      position: relative;
+      background-image: url('auth-bg.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .hero-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(251, 251, 249, 0.55) 0%, rgba(251, 251, 249, 0.88) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 84px 24px 72px 24px;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 56px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2b7a4b;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 52px;
+      line-height: 1.12;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 22px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--primary);
+    }
+
+    .hero-description {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Interactive Preview Card */
+    .hero-visual-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(207, 202, 192, 0.85);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 16px 40px -10px rgba(19, 44, 34, 0.08), 0 2px 10px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+    }
+
+    .example-indicator {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 3px 8px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 2px;
+    }
+
+    .example-indicator::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #7a8288;
+    }
+
+    .visual-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+    }
+
+    .visual-patient-info {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .visual-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-subtle);
+      color: var(--primary-text);
+      font-weight: 600;
+    }
+
+    .visual-record-item {
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .visual-record-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .visual-record-category {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #203e85;
+      background: #e8ecf8;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .visual-record-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .visual-record-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .visual-grant-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: #faf9f6;
+      border: 1px dashed var(--border-medium);
+      font-size: 12px;
+    }
+
+    /* Core Value Columns */
+    .editorial-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 80px 24px;
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 56px;
+      max-width: 680px;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .editorial-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+    }
+
+    .column-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .column-number {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: var(--border-strong);
+      font-weight: 400;
+    }
+
+    .column-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .column-text {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Comparison / Contrast Section */
+    .contrast-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 88px 24px;
+    }
+
+    .contrast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .contrast-card {
+      padding: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .contrast-card-legacy {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .contrast-card-medchain {
+      background: var(--primary-subtle);
+      border: 1px solid #c9decb;
+    }
+
+    .contrast-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .contrast-badge-legacy { color: var(--danger); }
+    .contrast-badge-medchain { color: var(--primary-text); }
+
+    .contrast-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .contrast-card-legacy .contrast-title { color: var(--text-primary); }
+    .contrast-card-medchain .contrast-title { color: var(--primary-text); }
+
+    .contrast-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 14px;
+    }
+
+    .contrast-list li {
+      display: flex;
+      gap: 12px;
+      line-height: 1.5;
+    }
+
+    .contrast-card-legacy .contrast-list li { color: var(--text-secondary); }
+    .contrast-card-medchain .contrast-list li { color: var(--primary-text); }
+
+    /* CTA Section */
+    .cta-banner {
+      background: var(--primary);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 64px 48px;
+      max-width: 1200px;
+      margin: 0 auto 80px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .cta-banner h2 {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .cta-banner p {
+      font-size: 16px;
+      color: #cde2d6;
+      max-width: 580px;
+    }
+
+    .cta-banner .btn-secondary {
+      background: #ffffff;
+      color: var(--primary);
+      border: none;
+      font-size: 15px;
+      padding: 14px 28px;
+      font-weight: 700;
+    }
+    .cta-banner .btn-secondary:hover {
+      background: #eef5f1;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    @media (max-width: 960px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+        padding-top: 48px;
+      }
+      .hero-title {
+        font-size: 40px;
+      }
+      .editorial-columns {
+        grid-template-columns: 1fr;
+      }
+      .contrast-grid {
+        grid-template-columns: 1fr;
+      }
+      .cta-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Clean Professional Header -->
+  <header class="landing-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand-group">
+        <span class="brand-title">MedChain</span>
+        <span class="brand-tagline">Healthcare Privacy Architecture</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#comparison">Standards</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-secondary">Sign In</a>
+        <a href="login.html?mode=signup" class="btn btn-primary">Open Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section with Full-Bleed Atmosphere -->
+  <main>
+    <div class="hero-wrapper">
+      <section class="hero-section">
+        <div>
+          <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            Decentralized Health Consent Infrastructure
+          </div>
+          <h1 class="hero-title">
+            Medical history owned by patients, <em>verifiable everywhere</em>.
+          </h1>
+          <p class="hero-description">
+            Health charts are encrypted on the patient's device prior to transmission. Smart contracts enforce time-limited access grants and permit category-level disclosures, returning governance of clinical records to individuals.
+          </p>
+          <div class="hero-cta-group">
+            <a href="login.html" class="btn btn-primary btn-lg">Launch Patient Portal</a>
+            <a href="#architecture" class="btn btn-secondary btn-lg">Review Architecture</a>
+          </div>
+        </div>
+
+        <!-- Live Interactive Architecture Preview -->
+        <div class="hero-visual-card">
+          <div class="visual-header">
+            <div>
+              <div class="example-indicator">Interactive Vault Example</div>
+              <div class="visual-patient-info" style="margin-top: 4px;">Alice Johnson (Patient)</div>
+              <div style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">Sample Vault &bull; Blood Group: A+</div>
+            </div>
+            <span class="visual-pill">AES-256 Encrypted</span>
+          </div>
+
+          <div class="visual-record-item">
+            <div class="visual-record-top">
+              <span class="visual-record-category">Laboratory</span>
+              <span style="font-size: 11px; color: var(--text-muted);">Verified Record</span>
+            </div>
+            <div class="visual-record-title">Comprehensive Metabolic Panel &amp; Lipid Evaluation</div>
+            <div class="visual-record-meta">Ciphertext Hash: 0x8a91f4...029c &bull; Status: Immutable</div>
+          </div>
+
+          <div class="visual-grant-row">
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary);">Dr. Emily Smith (Cardiology)</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Scopes: Diagnoses, Labs, Prescriptions &bull; Read Only</div>
+            </div>
+            <div style="font-size: 11px; font-weight: 700; color: #1e6b37;">Active (28 Days Left)</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Editorial Pillars -->
+    <section id="architecture" class="editorial-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Pillars of the Protocol</div>
+          <h2 class="section-title">Designed for clinical compliance and uncompromised privacy.</h2>
+        </div>
+
+        <div class="editorial-columns">
+          
+          <div class="column-card">
+            <div class="column-number">01</div>
+            <h3 class="column-title">Client-Side Encryption</h3>
+            <p class="column-text">
+              Records are symmetrically encrypted using AES-256 directly within the user's browser before transmission. Server nodes and database administrators possess zero visibility into plaintext clinical narratives or diagnostic observations.
+            </p>
+          </div>
+
+          <div class="column-card">
+            <div class="column-number">02</div>
+            <h3 class="column-title">Granular Disclosure</h3>
+            <p class="column-text">
+              Patients configure specific clinical scopes for each visiting specialist. Orthopedic physicians receive access to imaging and surgical records while sensitive psychiatric or reproductive notes remain strictly sealed under separate key envelopes.
+            </p>
+          </div>
+
+          <div class="column-card">
+            <div class="column-number">03</div>
+            <h3 class="column-title">Instant Revocation</h3>
+            <p class="column-text">
+              Consent authorizations contain deterministic expiration limits and can be terminated on demand. Revoking access permanently closes the decryption gateway, instantly blocking any subsequent practitioner inquiry.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Security Architecture Section -->
+    <section id="security" class="editorial-section" style="background: var(--canvas);">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Zero-Trust Clinical Security</div>
+          <h2 class="section-title">Cryptographic guarantees for hospital-grade data protection.</h2>
+        </div>
+
+        <div class="editorial-columns">
+          
+          <div class="column-card" style="background: var(--surface); padding: 28px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div class="column-number" style="color: var(--primary);">01</div>
+            <h3 class="column-title">Zero-Knowledge Storage</h3>
+            <p class="column-text">
+              Health payloads are symmetrically encrypted using AES-256 before leaving your device. Even database administrators and hosting infrastructure possess zero ability to read or tamper with medical data.
+            </p>
+          </div>
+
+          <div class="column-card" style="background: var(--surface); padding: 28px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div class="column-number" style="color: var(--primary);">02</div>
+            <h3 class="column-title">Crypto-Shredding (GDPR)</h3>
+            <p class="column-text">
+              Fulfills GDPR Article 17 "Right to Erasure" on permanent ledgers. Deleting a record irreversibly purges its unique AES decryption key, rendering the historical ciphertext into permanent mathematical noise.
+            </p>
+          </div>
+
+          <div class="column-card" style="background: var(--surface); padding: 28px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div class="column-number" style="color: var(--primary);">03</div>
+            <h3 class="column-title">Audited Emergency Override</h3>
+            <p class="column-text">
+              Accredited trauma physicians can initiate a Break-Glass override during life-or-death emergencies. All overrides require recorded clinical justifications and emit unforgeable alerts on the audit trail.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Contrast & Standards -->
+    <section id="comparison" class="contrast-section">
+      <div class="section-header">
+        <div class="section-eyebrow">System Comparison</div>
+        <h2 class="section-title">The shift from centralized custody to sovereign ownership.</h2>
+      </div>
+
+      <div class="contrast-grid">
+        
+        <div class="contrast-card contrast-card-legacy">
+          <div class="contrast-badge contrast-badge-legacy">Traditional Hospital Silos</div>
+          <h3 class="contrast-title">Fragmented Custody</h3>
+          <ul class="contrast-list">
+            <li>&bull; Patient data scattered across incompatible hospital databases.</li>
+            <li>&bull; Inability for patients to observe who reviewed their charts.</li>
+            <li>&bull; Data breaches expose unencrypted health information.</li>
+            <li>&bull; Opaque consent agreements signed once and forgotten.</li>
+          </ul>
+        </div>
+
+        <div class="contrast-card contrast-card-medchain">
+          <div class="contrast-badge contrast-badge-medchain">MedChain Ledger Protocol</div>
+          <h3 class="contrast-title">Sovereign Patient Control</h3>
+          <ul class="contrast-list">
+            <li>&bull; Unified patient-owned records portable across any care facility.</li>
+            <li>&bull; Immutable audit trail recording every access and disclosure.</li>
+            <li>&bull; Zero unencrypted health data stored on public networks.</li>
+            <li>&bull; Dynamic permissions with automated expiration and instant revocation.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bottom Action Banner -->
+    <div class="cta-banner">
+      <div>
+        <h2>Access your personal health vault today.</h2>
+        <p>Register as a patient or credentialed practitioner to experience sovereign healthcare consent.</p>
+      </div>
+      <div>
+        <a href="login.html" class="btn btn-secondary">Get Started</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>MedChain Health</strong> &bull; Decentralized Healthcare Consent Architecture
+      </div>
+      <ul class="footer-links">
+        <li><a href="login.html">Sign In</a></li>
+        <li><a href="login.html?mode=signup">Register</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>

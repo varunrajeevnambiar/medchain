@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedChain Health | Sign In &amp; Register</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --canvas: #fbfbf9;
+      --surface: #ffffff;
+      --surface-subtle: #f5f4f0;
+      --border-subtle: #e6e4dc;
+      --border-medium: #d4d0c5;
+      --text-primary: #191c1d;
+      --text-secondary: #474b4e;
+      --text-muted: #72767a;
+      --primary: #1b4938;
+      --primary-hover: #13372a;
+      --primary-subtle: #e8f0ec;
+      --primary-text: #113427;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-image: url('auth-bg.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .site-header {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(230, 228, 220, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+    }
+
+    .brand-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-page-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .auth-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(220, 216, 207, 0.95);
+      border-radius: var(--radius-lg);
+      padding: 38px 34px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 48px -12px rgba(19, 44, 34, 0.12), 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .auth-card h1 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .auth-card-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .role-toggle {
+      display: flex;
+      background: var(--surface-subtle);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .role-toggle-btn {
+      flex: 1;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      transition: all 140ms ease-out;
+    }
+
+    .role-toggle-btn.active {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .auth-mode-switch {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .auth-mode-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .auth-mode-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms ease-out;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+    }
+    .btn-secondary:hover { background: var(--surface-subtle); }
+
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0;
+      cursor: pointer;
+    }
+    .btn-link:hover { text-decoration: underline; }
+
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(120px);
+      opacity: 0;
+      transition: all 200ms ease-out;
+      z-index: 999;
+    }
+    .toast-box.show { transform: translateY(0); opacity: 1; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 28, 29, 0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      max-width: 500px;
+      width: 100%;
+      padding: 32px;
+      border: 1px solid var(--border-medium);
+    }
+    .modal-card h2 { font-family: var(--font-display); font-size: 22px; margin-bottom: 12px; }
+
+    .site-footer {
+      background: rgba(255, 255, 255, 0.94);
+      border-top: 1px solid rgba(230, 228, 220, 0.85);
+      padding: 20px 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand-group">
+        <span class="brand-title">MedChain</span>
+        <span class="brand-tagline">&bull; Patient-Controlled Health Records</span>
+      </a>
+      <div>
+        <a href="index.html" class="btn btn-secondary btn-sm">Home</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dedicated Authentication Page -->
+  <main class="auth-page-container">
+    <div class="auth-card">
+      <h1 id="authTitle">Sign In</h1>
+      <p id="authSubtitle" class="auth-card-subtitle">Access your secure medical dashboard.</p>
+
+      <!-- Role Toggle -->
+      <div class="role-toggle">
+        <button id="roleBtnPatient" class="role-toggle-btn active" onclick="setAuthRole('patient')">
+          Patient
+        </button>
+        <button id="roleBtnDoctor" class="role-toggle-btn" onclick="setAuthRole('doctor')">
+          Doctor
+        </button>
+      </div>
+
+      <!-- Mode Switch -->
+      <div class="auth-mode-switch">
+        <button id="tabModeSignIn" class="auth-mode-tab active" onclick="setAuthMode('signin')">
+          Sign In
+        </button>
+        <button id="tabModeSignUp" class="auth-mode-tab" onclick="setAuthMode('signup')">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form onsubmit="event.preventDefault(); handleAuthSubmit();">
+        <div class="form-group">
+          <label class="form-label" for="authEmail">Email Address</label>
+          <input id="authEmail" type="email" class="form-input" placeholder="name@example.com" required />
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="authPassword" style="margin-bottom: 0;">Password</label>
+            <button type="button" onclick="openForgotPasswordModal()" class="btn-link" id="linkForgotPassword">Forgot Password?</button>
+          </div>
+          <input id="authPassword" type="password" class="form-input" placeholder="Enter password" required />
+        </div>
+
+        <div id="signUpFields" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="authFullName">Full Legal Name</label>
+            <input id="authFullName" type="text" class="form-input" placeholder="e.g. Alice Johnson" />
+          </div>
+
+          <div id="patientExtraFields">
+            <div class="form-group">
+              <label class="form-label" for="authBloodType">Blood Type</label>
+              <select id="authBloodType" class="form-select">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+" selected>O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="doctorExtraFields" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="authSpecialization">Medical Specialty</label>
+              <input id="authSpecialization" type="text" class="form-input" placeholder="e.g. Cardiology" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="authLicense">Medical License Number</label>
+              <input id="authLicense" type="text" class="form-input" placeholder="e.g. LIC-CARD-001" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+          Sign In
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal-overlay">
+    <div class="modal-card">
+      <h2>Reset Your Password</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+        Enter your registered email address and we will dispatch a reset link.
+      </p>
+
+      <div id="forgotFormContainer">
+        <div class="form-group">
+          <label class="form-label" for="forgotEmailInput">Registered Email Address</label>
+          <input id="forgotEmailInput" type="email" class="form-input" placeholder="name@example.com" required />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" onclick="closeForgotPasswordModal()" class="btn btn-secondary">Cancel</button>
+          <button type="button" onclick="sendPasswordResetEmail()" class="btn btn-primary">Send Reset Link</button>
+        </div>
+      </div>
+
+      <div id="forgotSuccessContainer" style="display: none; padding: 20px; background: var(--primary-subtle); border: 1px solid #c9decb; border-radius: var(--radius-sm); margin-top: 16px;">
+        <p style="font-size: 14px; color: var(--primary-text); line-height: 1.5; margin-bottom: 16px;">
+          Password reset email sent to <strong id="forgotSentEmail"></strong>.
+        </p>
+        <div style="text-align: right;">
+          <button onclick="closeForgotPasswordModal()" class="btn btn-primary btn-sm">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastBox" class="toast-box">
+    <div id="toastTitle" style="font-weight: 700; font-size: 13px; margin-bottom: 2px;"></div>
+    <div id="toastDesc" style="font-size: 12px; color: var(--text-secondary);"></div>
+  </div>
+
+  <footer class="site-footer">
+    MedChain Health &bull; Patient-Controlled Medical Access Architecture
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+[
+  "event PatientRegistered(address indexed patient, string name, uint256 timestamp)",
+  "event DoctorRegistered(address indexed doctor, string name, string specialization, string licenseNumber)",
+  "event MedicalRecordAdded(address indexed patient, uint256 indexed recordId, string recordType, string title)",
+  "event AccessGranted(address indexed patient, address indexed doctor, uint8 level, uint256 expiresAt)",
+  "event AccessRevoked(address indexed patient, address indexed doctor, uint256 timestamp)",
+  "event RecordAccessed(address indexed patient, address indexed doctor, uint256 indexed recordId, uint256 timestamp)",
+  "function registerPatient(string _name, string _bloodType)",
+  "function registerDoctor(string _name, string _specialization, string _licenseNumber)",
+  "function addRecord(string _recordType, string _title, string _encryptedIpfsHash, string _dataHash, string _encryptedKey) returns (uint256)",
+  "function getMyRecords() view returns (tuple(uint256 id, string recordType, string title, string encryptedIpfsHash, string dataHash, string encryptedKey, uint256 createdAt)[])",
+  "function grantAccess(address _doctor, uint8 _level, uint256 _durationSeconds, string _encryptedKeyForDoctor, uint256[] _allowedRecordIds)",
+  "function revokeAccess(address _doctor)",
+  "function checkAccess(address _patient, address _doctor, uint256 _recordId) view returns (bool hasAccess, uint8 level, string encryptedKey)",
+  "function accessRecord(address _patient, uint256 _recordId) returns (tuple(uint256 id, string recordType, string title, string encryptedIpfsHash, string dataHash, string encryptedKey, uint256 createdAt), string encryptedKeyForDoctor)",
+  "function getPatientRecordsAsDoctor(address _patient) view returns (tuple(uint256 id, string recordType, string title, string encryptedIpfsHash, string dataHash, string encryptedKey, uint256 createdAt)[])",
+  "function getMyGrants() view returns (tuple(address doctor, uint8 level, uint256 grantedAt, uint256 expiresAt, bool active, string encryptedKeyForDoctor, uint256[] allowedRecordIds)[])",
+  "function getAllDoctors() view returns (address[] addrs, tuple(string name, string specialization, string licenseNumber, bool registered, bool verified, uint256 registeredAt)[] profiles)",
+  "function patients(address) view returns (string name, string bloodType, bool registered, uint256 registeredAt)",
+  "function doctors(address) view returns (string name, string specialization, string licenseNumber, bool registered, bool verified, uint256 registeredAt)"
+]

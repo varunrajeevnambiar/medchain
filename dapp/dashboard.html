@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedChain Health | Clinical Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --canvas: #fbfbf9;
+      --surface: #ffffff;
+      --surface-subtle: #f5f4f0;
+      --border-subtle: #e6e4dc;
+      --border-medium: #d4d0c5;
+      --text-primary: #191c1d;
+      --text-secondary: #474b4e;
+      --text-muted: #72767a;
+      --primary: #1b4938;
+      --primary-hover: #13372a;
+      --primary-subtle: #e8f0ec;
+      --primary-text: #113427;
+      --doctor-primary: #1a446c;
+      --doctor-hover: #12314f;
+      --doctor-subtle: #eaf1f7;
+      --danger: #9a2828;
+      --danger-subtle: #faebeb;
+      --danger-border: #e8b6b6;
+      --warning: #855306;
+      --warning-subtle: #fdf6e9;
+      --warning-border: #e9cf97;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 10px;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+    }
+
+    .brand-tagline { font-size: 13px; color: var(--text-muted); }
+
+    .header-user-menu {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-greeting {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms ease-out;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-doctor {
+      background: var(--doctor-primary);
+      color: #ffffff;
+      border-color: var(--doctor-primary);
+    }
+    .btn-doctor:hover { background: var(--doctor-hover); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border-medium);
+    }
+    .btn-secondary:hover { background: var(--surface-subtle); }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger-border);
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    .btn-danger:hover { background: var(--danger-subtle); }
+
+    .btn-emergency {
+      background: var(--danger);
+      color: #ffffff;
+      font-weight: 700;
+    }
+    .btn-emergency:hover { background: #7a1f1f; }
+
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .dashboard-container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 64px 24px;
+      flex: 1;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .dashboard-header h1 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .panel-description { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+
+    .grid-workspace {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 24px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .form-textarea { font-family: var(--font-sans); font-size: 13px; resize: vertical; }
+
+    .data-table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: var(--surface-subtle);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+    }
+    .data-table tr:hover td { background: #faf9f6; }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+
+    .tag-diagnosis { background: #e8ecf8; color: #203e85; }
+    .tag-lab { background: #e3f4f6; color: #185a63; }
+    .tag-prescription { background: #e5f4ec; color: #195e38; }
+    .tag-imaging { background: #f6ecfa; color: #622277; }
+    .tag-mental { background: #fcf0e3; color: #824707; }
+    .tag-other { background: var(--surface-subtle); color: var(--text-secondary); }
+    .tag-active { background: #e8f5ec; color: #1e6b37; }
+    .tag-emergency { background: var(--danger-subtle); color: var(--danger); font-weight: 700; }
+
+    .alert-banner {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .alert-banner-danger { background: var(--danger-subtle); border: 1px solid var(--danger-border); color: var(--danger); }
+    .alert-banner-success { background: var(--primary-subtle); border: 1px solid #c9decb; color: var(--primary-text); }
+
+    .scopes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: var(--surface-subtle);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(120px);
+      opacity: 0;
+      transition: all 200ms ease-out;
+      z-index: 999;
+    }
+    .toast-box.show { transform: translateY(0); opacity: 1; }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 28, 29, 0.45);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      max-width: 520px;
+      width: 100%;
+      padding: 32px;
+      border: 1px solid var(--border-medium);
+    }
+    .modal-card h2 { font-family: var(--font-display); font-size: 22px; margin-bottom: 12px; }
+
+    .site-footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border-subtle);
+      padding: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .grid-workspace { grid-template-columns: 1fr; }
+      .scopes-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-group" onclick="window.location.href='index.html'">
+        <span class="brand-title">MedChain</span>
+        <span class="brand-tagline">&bull; Patient-Controlled Health Records</span>
+      </div>
+
+      <div class="header-user-menu">
+        <div id="headerUserInfo" style="display: flex; align-items: center; gap: 14px;">
+          <span id="headerUserName" class="user-greeting">Signed in</span>
+          <button onclick="logout()" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Workspace Container -->
+  <main class="dashboard-container">
+
+    <!-- ===================================================================== -->
+    <!-- PATIENT PORTAL (ONLY FOR LOGGED-IN PATIENTS)                          -->
+    <!-- ===================================================================== -->
+    <div id="viewPatient" style="display: none;">
+      <div class="dashboard-header">
+        <div>
+          <h1>My Health Records</h1>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">
+            Welcome back, <strong id="patientGreetingName" style="color: var(--primary);">Patient</strong> &bull; Blood Group: <span id="patientBloodDisplay">O+</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-workspace">
+        <!-- Add Record -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Add Health Record</h2>
+              <div class="panel-description">Your records are encrypted and stored safely.</div>
+            </div>
+          </div>
+
+          <form onsubmit="event.preventDefault(); submitPatientRecord();">
+            <div class="form-group">
+              <label class="form-label" for="recordTypeSelect">Category</label>
+              <select id="recordTypeSelect" class="form-select">
+                <option value="DIAGNOSIS">Diagnosis &amp; Summary</option>
+                <option value="LAB_RESULT">Laboratory &amp; Blood Panel</option>
+                <option value="PRESCRIPTION">Prescriptions &amp; Medications</option>
+                <option value="IMAGING">Imaging &amp; Radiology (X-Ray / MRI)</option>
+                <option value="MENTAL_HEALTH">Mental Health / Therapy (Sensitive)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="recordTitleInput">Title</label>
+              <input id="recordTitleInput" type="text" class="form-input" placeholder="e.g. Annual Cardiovascular Screening" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="recordBodyInput">Clinical Notes &amp; Findings</label>
+              <textarea id="recordBodyInput" rows="4" class="form-textarea" placeholder="Resting BP: 122/80. LDL: 104 mg/dL. Normal cardiac sinus rhythm." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Save Encrypted Record
+            </button>
+          </form>
+        </div>
+
+        <!-- Records Table -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">My Records (<span id="patientRecordCount">0</span>)</h2>
+              <div class="panel-description">Only you and doctors you explicitly authorize can read these.</div>
+            </div>
+          </div>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Title &amp; Clinical Notes</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="patientRecordsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Access Grant Management Panel -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Doctor Access Permissions</h2>
+            <div class="panel-description">Choose which doctors can view your records, set time limits, or revoke access anytime.</div>
+          </div>
+        </div>
+
+        <div style="background: var(--surface-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 18px; margin-bottom: 20px;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div>
+              <label class="form-label" for="grantDoctorSelect">Select Doctor to Authorize</label>
+              <select id="grantDoctorSelect" class="form-select"></select>
+            </div>
+            <div>
+              <label class="form-label" for="grantAccessLevel">Permission Level</label>
+              <select id="grantAccessLevel" class="form-select">
+                <option value="1">Read Only (View Chart)</option>
+                <option value="2">Read &amp; Write (Add Notes/Prescriptions)</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label" for="grantDuration">Duration Limit</label>
+              <select id="grantDuration" class="form-select">
+                <option value="86400">24 Hours (Urgent Care)</option>
+                <option value="604800">7 Days (Consultation)</option>
+                <option value="2592000" selected>30 Days (Standard Care)</option>
+                <option value="31536000">1 Year (Primary Care)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Permitted Categories (Uncheck any category you wish to keep hidden from this doctor):</label>
+            <div class="scopes-grid">
+              <label class="scope-item">
+                <input type="checkbox" id="scopeDiagnosis" checked />
+                <span>General Diagnoses &amp; Summaries</span>
+              </label>
+              <label class="scope-item">
+                <input type="checkbox" id="scopeLabs" checked />
+                <span>Laboratory &amp; Blood Tests</span>
+              </label>
+              <label class="scope-item">
+                <input type="checkbox" id="scopePrescription" checked />
+                <span>Prescriptions &amp; Medications</span>
+              </label>
+              <label class="scope-item">
+                <input type="checkbox" id="scopeImaging" checked />
+                <span>Imaging &amp; Radiology Scans</span>
+              </label>
+              <label class="scope-item" style="grid-column: span 2; border-color: var(--warning-border);">
+                <input type="checkbox" id="scopeMentalHealth" />
+                <span style="color: var(--warning); font-weight: 600;">Mental Health &amp; Therapy Notes (Sensitive &bull; Opt-In Only)</span>
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; text-align: right;">
+            <button onclick="submitAccessGrant()" class="btn btn-primary">
+              Authorize Doctor
+            </button>
+          </div>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Specialty</th>
+                <th>Permission</th>
+                <th>Allowed Categories</th>
+                <th>Expires</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="patientGrantsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Access History Log -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 class="panel-title">Access Activity Log</h2>
+              <span id="patientInquiryBadge" class="tag tag-mental" style="display: none; font-size: 11px; padding: 3px 8px; font-weight: 700; cursor: pointer;" onclick="markInquiriesRead()">
+                1 New Inquiry
+              </span>
+            </div>
+            <div class="panel-description">A transparent record of all grants, revocations, and doctor consultations.</div>
+          </div>
+          <div>
+            <button onclick="renderPatientAudit()" class="btn btn-secondary btn-sm">Refresh Log</button>
+          </div>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Doctor</th>
+                <th>Details</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="patientAuditTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- DOCTOR PORTAL (ONLY FOR LOGGED-IN DOCTORS)                            -->
+    <!-- ===================================================================== -->
+    <div id="viewDoctor" style="display: none;">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="color: var(--doctor-primary);">Doctor Clinical Terminal</h1>
+          <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">
+            Physician: <strong id="doctorGreetingName" style="color: var(--doctor-primary);">Dr. Smith</strong> &bull; 
+            Specialty: <span id="doctorSpecialtyDisplay">Cardiology</span> &bull; 
+            License: <span id="doctorLicenseDisplay" style="font-family: var(--font-mono);">LIC-001</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Lookup Patient Health Chart</h2>
+            <div class="panel-description">Enter the patient's registered email or ID to review their chart.</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+          <input id="inputPatientEmailLookup" type="text" class="form-input" style="flex: 1;" placeholder="Enter patient email address or ID" />
+          <button onclick="consultPatientChart()" class="btn btn-doctor">
+            Check Consent &amp; View Chart
+          </button>
+          <button onclick="openBreakGlassModal()" class="btn btn-emergency">
+            Emergency Break-Glass
+          </button>
+        </div>
+
+        <div id="doctorQueryResultBox" style="display: none;">
+          <div id="doctorAccessStatusMessage" class="alert-banner"></div>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Record Title</th>
+                  <th>Clinical Notes &amp; Findings</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="doctorChartTableBody"></tbody>
+            </table>
+          </div>
+
+          <div id="doctorWritePanel" style="margin-top: 24px; padding: 18px; background: var(--surface-subtle); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); display: none;">
+            <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--doctor-primary);">
+              Add Consultation Note (Read &amp; Write Access Granted)
+            </h3>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <input id="inputDocNoteTitle" type="text" class="form-input" placeholder="Title (e.g. Follow-Up Evaluation)" />
+              <select id="selectDocNoteCategory" class="form-select">
+                <option value="PRESCRIPTION">Prescription / Medication Order</option>
+                <option value="DIAGNOSIS">Diagnostic Follow-up</option>
+              </select>
+            </div>
+            <textarea id="inputDocNoteBody" rows="2" class="form-textarea" placeholder="Clinical observations and therapy plan..." style="margin-bottom: 10px;"></textarea>
+            <button onclick="submitDoctorConsultationNote()" class="btn btn-doctor btn-sm">
+              Append Note to Patient Record
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctor Audit Trail -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">My Clinical Access Log</h2>
+            <div class="panel-description">Permanent log of all patient chart inquiries and emergency overrides.</div>
+          </div>
+        </div>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>Patient</th>
+                <th>Details</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="doctorAuditTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Emergency Break-Glass Modal -->
+  <div id="breakGlassModal" class="modal-overlay">
+    <div class="modal-card" style="border-top: 4px solid var(--danger);">
+      <h2 style="color: var(--danger);">Emergency Break-Glass Override</h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        <strong>ATTENTION:</strong> You are accessing patient records under the Emergency Trauma protocol without prior patient consent.
+      </p>
+
+      <div class="form-group">
+        <label class="form-label" for="breakGlassReason">Clinical Emergency Justification (Required)</label>
+        <textarea id="breakGlassReason" rows="2" class="form-textarea" placeholder="e.g. Unconscious patient admitted to ER with severe trauma, requiring immediate blood type and allergy verification." required></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button onclick="closeBreakGlassModal()" class="btn btn-secondary">Cancel</button>
+        <button onclick="executeBreakGlassOverride()" class="btn btn-emergency">
+          Confirm Emergency Access
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastBox" class="toast-box">
+    <div id="toastTitle" style="font-weight: 700; font-size: 13px; margin-bottom: 2px;"></div>
+    <div id="toastDesc" style="font-size: 12px; color: var(--text-secondary);"></div>
+  </div>
+
+  <footer class="site-footer">
+    MedChain Health &bull; Patient-Controlled Medical Access Architecture
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
